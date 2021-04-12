@@ -32,7 +32,7 @@
             v-model="form.titre"
             :options="civiliteOptions"
             name="civilite"
-            required
+
           ></b-form-radio-group>
         </b-form-group>
 
@@ -47,7 +47,7 @@
               id="nom"
               v-model="form.nom"
               type="text"
-              required
+
             ></b-form-input>
           </b-form-group>
 
@@ -61,7 +61,7 @@
               id="prenom"
               v-model="form.prenom"
               type="text"
-              required
+
             ></b-form-input>
           </b-form-group>
         </b-form-row>
@@ -77,7 +77,7 @@
               id="email"
               v-model="form.email"
               type="email"
-              required
+
             ></b-form-input>
           </b-form-group>
 
@@ -91,7 +91,7 @@
               id="motpasse"
               v-model="form.motDePasse"
               type="password"
-              required
+
             ></b-form-input>
           </b-form-group>
         </b-form-row>
@@ -108,7 +108,7 @@
               v-model="form.adresse1"
               type="text"
               placeholder="123 rue Lulu"
-              required
+
             ></b-form-input>
           </b-form-group>
         </b-form-row>
@@ -140,7 +140,7 @@
               id="ville"
               v-model="form.ville"
               type="text"
-              required
+
             ></b-form-input>
           </b-form-group>
           <b-form-group
@@ -153,7 +153,7 @@
               id="codepostal"
               v-model="form.codePostal"
               type="text"
-              required
+
             ></b-form-input>
           </b-form-group>
         </b-form-row>
@@ -213,14 +213,18 @@ export default {
         this.axios
           .put("/api/personnes/" + this.form.id, this.form)
           .then((res) => {
-            this.$bvModal.msgBoxOk("Formulaire envoyé avec succès !");
+            this.$bvToast.toast("Formulaire envoyé avec succès !",{variant: "success", solid: true});
             this.initPage();
             this.$refs.modalEditUtilisateur.hide();
           })
           .catch((err) => {
-            this.$bvModal.msgBoxOk(
-              `Une erreur s'est produite lors de l'envoi du formulaire`
-            );
+            if(err.response.data.errors!=null){
+              for (let i = 0; i < err.response.data.errors.length; i++) {
+                this.$bvToast.toast(
+                    err.response.data.errors[i].defaultMessage,
+                    {variant: "danger", solid: true}
+                );
+              }}
           });
       }
     },
